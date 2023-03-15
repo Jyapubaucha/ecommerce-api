@@ -36,10 +36,19 @@ const userLogin = asyncHandler(async (req, res) => {
             role: findUser.role,
             token: generateToken(findUser?._id)
         })
-    } else { 
+    } else {
         throw new Error("Invalid Credentials")
     }
 });
 
+const getAllUser = asyncHandler(async (req,res) => {
+    try {
+        const getUsers = await User.find();
+        res.json(getUsers);
+    } catch (error) {
+        throw new Error(error)
+    }
+})
 
-module.exports = { createUser, userLogin };
+
+module.exports = { createUser, userLogin, getAllUser};

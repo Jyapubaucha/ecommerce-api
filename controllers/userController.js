@@ -74,5 +74,16 @@ const deleteUser = asyncHandler(async (req, res) => {
     }
 })
 
+//Update a user with id
+const updateUser = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const updateUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+        res.json(updateUser);
+    } catch (error) {
+        throw new Error(error)
+    }
+})
 
-module.exports = { createUser, userLogin, getAllUser, getSingleUser, deleteUser };
+
+module.exports = { createUser, userLogin, getAllUser, getSingleUser, deleteUser,updateUser };

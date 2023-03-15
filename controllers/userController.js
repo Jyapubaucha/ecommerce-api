@@ -41,7 +41,9 @@ const userLogin = asyncHandler(async (req, res) => {
     }
 });
 
-const getAllUser = asyncHandler(async (req,res) => {
+
+//Get all user from database
+const getAllUser = asyncHandler(async (req, res) => {
     try {
         const getUsers = await User.find();
         res.json(getUsers);
@@ -50,5 +52,16 @@ const getAllUser = asyncHandler(async (req,res) => {
     }
 })
 
+//Get a single user
+const getSingleUser = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        const getUser = await User.findById(id);
+        res.json(getUser);
+    } catch (error) {
+        throw new Error(error)
+    }
+})
 
-module.exports = { createUser, userLogin, getAllUser};
+
+module.exports = { createUser, userLogin, getAllUser, getSingleUser };

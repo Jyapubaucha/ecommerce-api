@@ -9,7 +9,7 @@ router.post("/login", userLogin);
 router.get("/all-users", getAllUser);
 router.get("/:id", authMiddleware,isAdmin, getSingleUser);
 router.delete("/:id", deleteUser);
-router.put("/:id", updateUser);
+router.put("/update-user", authMiddleware, updateUser);
 
 
 module.exports = router;

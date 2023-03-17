@@ -76,9 +76,16 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 //Update a user with id
 const updateUser = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const { _id } = req.user;
     try {
-        const updateUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+        const updateUser = await User.findByIdAndUpdate(_id,
+            {
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                email: req.body.email,
+                mobile: req.body.mobile
+            }, 
+            { new: true });
         res.json(updateUser);
     } catch (error) {
         throw new Error(error)
@@ -86,4 +93,4 @@ const updateUser = asyncHandler(async (req, res) => {
 })
 
 
-module.exports = { createUser, userLogin, getAllUser, getSingleUser, deleteUser,updateUser };
+module.exports = { createUser, userLogin, getAllUser, getSingleUser, deleteUser, updateUser };

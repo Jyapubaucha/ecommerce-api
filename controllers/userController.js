@@ -2,6 +2,8 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwToken");
 const validateMongoDbId = require("../utils/validateMongoDbId");
+const { generateRefereshToken } = require("../config/refreshToken");
+
 
 
 //User registration
@@ -31,6 +33,23 @@ const userLogin = asyncHandler(async (req, res) => {
 
     //isPasswordMathched method from userModel.js
     if (findUser && await findUser.isPasswordMatched(password)) {
+
+        //Start Refresh logged in user token in 1 day
+        const refreshToken = await generateRefereshToken(findUser?._id);
+        const updateuser = await User.findByIdAndUpdate(
+            findUser?.id,
+            {
+                refreshToken: refreshToken
+            }, {
+            new: true,
+        });
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            maxAge: 72 * 60 * 60 * 1000,
+        });
+        //End Refresh logged in user token in 1 day
+
+
         res.json({
             _id: findUser._id,
             firstname: findUser.firstname,

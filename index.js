@@ -4,6 +4,7 @@ const connectDb = require("./config/dbConnection");
 const app = express();
 const dotenv = require("dotenv").config();
 const authRouter = require("./routes/authRoute");
+const productRouter = require("./routes/productRoute");
 const { notFound, errorHandler } = require("./middlewares/errorHandler");
 const cookieParser = require("cookie-parser");
 
@@ -14,8 +15,11 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 4000;
 
-//Routes to auth router
+//Routes to user features
 app.use('/api/user', authRouter);
+
+//Router to product features
+app.use('/api/product',productRouter);
 
 app.use(notFound)
 app.use(errorHandler);

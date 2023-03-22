@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-var productSchema = new Schema({
+var productSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -29,10 +29,10 @@ var productSchema = new Schema({
         enum: ["Apple", "Samsung", "Lenovo"],
     },
     quantity: {
-        type: number,
+        type: Number,
     },
     sold: {
-        type: number,
+        type: Number,
         default: 0
     },
     images: {

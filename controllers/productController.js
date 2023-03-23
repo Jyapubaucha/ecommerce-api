@@ -93,6 +93,21 @@ const getAllProducts = asyncHandler(async (req, res) => {
             query = query.sort('-createdAt')
         } 
 
+
+        //Limiting the fields to be desplayed to the user's
+            // localhost:5001/api/product?fields=title,description,price
+            // This URL Shows data of _id, title, description, price
+
+            // localhost:5001/api/product?fields=-title,-description,-price  //adding minus
+            // This URL Shows data of whole data instead of this "_id, title, description, price"
+
+        if(req.query.fields){
+            const fields = req.query.fields.split(",").join(" ");
+            query = query.select(fields);
+        }else{
+            query = query.select('-__v');
+        }
+
         const product = await query;
         res.json(product);
     }

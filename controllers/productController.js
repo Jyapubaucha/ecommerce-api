@@ -108,8 +108,37 @@ const getAllProducts = asyncHandler(async (req, res) => {
             query = query.select('-__v');
         }
 
+
+        //Pagination to show how many product to show in one page
+
+            //Total data: 5
+
+            // localhost:5001/api/product?page=1&limit=2
+            // This page show in a page no 1, data = 2
+
+            // localhost:5001/api/product?page=2&limit=2
+            // This page show in a page no 2, data = 2
+
+            // localhost:5001/api/product?page=3&limit=2
+            // This page show in a page no 3 data = 1, which is remaining
+
+            // localhost:5001/api/product?page=4&limit=2
+            // This page show in a page no 4, It shows "This page is not exists."
+
+
+        const page = req.query.page;
+        const limit = req.query.limit;
+        const skip = (page-1) * limit;
+
+        query = query.skip(skip).limit(limit);
+        if(req.query.page){
+            const productCount = await Product.countDocuments();
+            if(skip >= productCount) throw new Error ('This page is not exist.');
+        }
+        console.log(page, limit, skip);
+
         const product = await query;
-        res.json(product);
+        res.json(product); 
     }
     catch (error) {
         throw new Error(error);

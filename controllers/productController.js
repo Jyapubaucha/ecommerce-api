@@ -73,7 +73,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
             //lt= less than
 
         //localhost:5001/api/product?price[gte]=100000&price[lte]=200000
-        
+
         const queryObj = { ...req.query };
         const excludeFields = ["page", "sort", "limit", "fields"];
         excludeFields.forEach((el) => delete queryObj[el]);
@@ -82,7 +82,17 @@ const getAllProducts = asyncHandler(async (req, res) => {
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-        const query = Product.find(JSON.parse(queryStr));
+        let query = Product.find(JSON.parse(queryStr));
+
+        //Sorting 
+        //localhost:5001/api/product?sort=-category,-brand or category,brand
+        if(req.query.sort){
+            const sortBy = req.query.sort.split(",").join(" ");
+            query = query.sort(sortBy);
+        }else{
+            query = query.sort('-createdAt')
+        } 
+
         const product = await query;
         res.json(product);
     }

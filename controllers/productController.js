@@ -64,11 +64,27 @@ const getaProduct = asyncHandler(async (req, res) => {
 //get add products from database
 const getAllProducts = asyncHandler(async (req, res) => {
     try {
-        const getAllProducts = await Product.find({
-            brand: req.query.brand,
-            category: req.query.category
-        });
-        res.json(getAllProducts);
+        //Filtering products with price
+        //Postman routes
+        //Notes
+            //gte = greater than equal to
+            //gt= greater than
+            //lte = less than equal to
+            //lt= less than
+
+        //localhost:5001/api/product?price[gte]=100000&price[lte]=200000
+        
+        const queryObj = { ...req.query };
+        const excludeFields = ["page", "sort", "limit", "fields"];
+        excludeFields.forEach((el) => delete queryObj[el]);
+        console.log(queryObj);
+
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+        const query = Product.find(JSON.parse(queryStr));
+        const product = await query;
+        res.json(product);
     }
     catch (error) {
         throw new Error(error);

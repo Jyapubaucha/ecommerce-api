@@ -23,7 +23,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         if (req.body.title) {
             req.body.slug = slugify(req.body.title);
         }
-        const updateProductt = await Product.findOneAndUpdate({_id}, req.body,{
+        const updateProductt = await Product.findOneAndUpdate({ _id }, req.body, {
             new: true,
 
         })
@@ -33,6 +33,20 @@ const updateProduct = asyncHandler(async (req, res) => {
         throw new Error(error);
     }
 });
+
+//Delete Product with id
+const deleteProduct = asyncHandler(async (req, res) => {
+    const _id = req.params;
+
+    try {
+        const deleteProduct = await Product.findOneAndDelete({ _id });
+        res.json(deleteProduct);
+    }
+    catch (err) {
+        throw new Error(err);
+    }
+});
+
 
 //get a single product with id
 const getaProduct = asyncHandler(async (req, res) => {
@@ -58,4 +72,4 @@ const getAllProducts = asyncHandler(async (req, res) => {
 });
 
 
-module.exports = { createProduct, getaProduct, getAllProducts, updateProduct };
+module.exports = { createProduct, getaProduct, getAllProducts, updateProduct, deleteProduct };

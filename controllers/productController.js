@@ -2,6 +2,7 @@ const Product = require("../models/productModel");
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 
+
 //create new product
 const createProduct = asyncHandler(async (req, res) => {
     try {

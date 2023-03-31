@@ -6,6 +6,7 @@ const { generateRefereshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { response } = require("express");
+const { sendEmail } = require("./emailController");
 
 //User registration
 const createUser = asyncHandler(async (req, res) => {
@@ -197,7 +198,7 @@ const unblockUser = asyncHandler(async (req, res) => {
     }
 });
 
-const updatePassword = asyncHandler (async (req,res) => {
+const updatePassword = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     const { password } = req.body;
 
@@ -205,15 +206,42 @@ const updatePassword = asyncHandler (async (req,res) => {
 
     const user = await User.findById(_id);
 
-    if(password){
+    if (password) {
         user.password = password;
         const updatedPassword = await user.save();
         res.json(updatedPassword);
     }
-    else{
+    else {
         res.json(user);
     }
 })
+
+const forgetPasswordToken = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw new Error("User not found with this email address");
+    }
+    try {
+        const token = await user.createPasswordResetToken();
+        await user.save();
+        const resetURL = `Hi, Please follow this link to reset 
+                        your password. This link is valid till 
+                        10 minutes from now. 
+                        <a href='http://localhost:5000/api/user/reset-password/${token}'> Click here </a>`
+        const data = {
+            to: email,
+            text: "Hey User",
+            subject: "Forget Password Link",
+            htm: resetURL,
+        };
+        sendEmail(data);
+        res.json(token);
+    }
+    catch (error) {
+        throw new Error(error);
+    }
+});
 
 
 
@@ -223,5 +251,5 @@ module.exports = {
     userLogin, getAllUser,
     getSingleUser, deleteUser,
     updateUser, blockUser, unblockUser, handleRefreshToken, logOut,
-    updatePassword
+    updatePassword, forgetPasswordToken
 };

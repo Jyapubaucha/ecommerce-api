@@ -4,8 +4,8 @@ const { generateToken } = require("../config/jwToken");
 const validateMongoDbId = require("../utils/validateMongoDbId");
 const { generateRefereshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
-
-
+const crypto = require("crypto");
+const { response } = require("express");
 
 //User registration
 const createUser = asyncHandler(async (req, res) => {
@@ -197,6 +197,24 @@ const unblockUser = asyncHandler(async (req, res) => {
     }
 });
 
+const updatePassword = asyncHandler (async (req,res) => {
+    const { _id } = req.user;
+    const { password } = req.body;
+
+    validateMongoDbId(_id);
+
+    const user = await User.findById(_id);
+
+    if(password){
+        user.password = password;
+        const updatedPassword = await user.save();
+        res.json(updatedPassword);
+    }
+    else{
+        res.json(user);
+    }
+})
+
 
 
 
@@ -204,5 +222,6 @@ module.exports = {
     createUser,
     userLogin, getAllUser,
     getSingleUser, deleteUser,
-    updateUser, blockUser, unblockUser, handleRefreshToken, logOut
+    updateUser, blockUser, unblockUser, handleRefreshToken, logOut,
+    updatePassword
 };

@@ -14,7 +14,7 @@ var blogSchema = new mongoose.Schema({
         required: true,
     },
     numViews: {
-        type: number,
+        type: Number,
         default: 0,
     },
     isLiked: {
@@ -51,5 +51,6 @@ var blogSchema = new mongoose.Schema({
         virtuals: true,
     }, 
     timestamps: true,
-}
-);
+});
+
+module.exports = mongoose.model("Blog", blogSchema);
